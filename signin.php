@@ -19,8 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             // Password is correct, start a session and redirect to the dashboard
             session_start();
-            $_SESSION['username'] = $username;
-            header("Location: dashboard.php");
+            $_SESSION['user_id'] = $user['id'];
+            header("Location: create.php");
             exit();
         } else {
             $error = "Invalid username or password.";
@@ -40,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Sign In</title>
 </head>
@@ -60,9 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="password" class="form-label">Password</label>
                             <input type="password" id="password" name="password" class="form-control" required>
                         </div>
-                    <div class="mb-3">
-                        <p>Dont have an account? <a href="signup.php">Click here</a></p>
-                    </div>
 
                         <button type="submit" class="btn btn-primary w-100">Sign In</button>
                     </form>
@@ -72,7 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <?php endif; ?>
                     </div>
                 </div>
+                <div class="text-center">
+                            <p>Dont have an account? <a href="signup.php">Sign Up</a></p>
+                        </div>
             </div>
+          
         </div>
     </div>
 </div>
