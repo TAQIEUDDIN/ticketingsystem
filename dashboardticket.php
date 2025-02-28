@@ -1,15 +1,32 @@
 <?php
-require 'db.php';
 session_start();
 
+// Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
-    die("Error: User not logged in.");
+    header("Location: signin.php?error=Please log in first.");
+    exit();
 }
 
+// Check session timeout (30 mins = 1800 seconds)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $_SESSION['expire_time'])) {
+    session_unset();
+    session_destroy();
+    header("Location: signin.php?error=Session expired. Please log in again.");
+    exit();
+}
+
+// Update last activity time
+$_SESSION['last_activity'] = time();
+
+require 'db.php';
+
 // Fetch tickets for the logged-in user
-$result = $conn->query("SELECT ticketid, title, description, status FROM tickets WHERE user_id = {$_SESSION['user_id']}");
+$result = $conn->query("SELECT ticketid, title, description, priority, status FROM tickets WHERE user_id = {$_SESSION['user_id']}");
 $tickets = $result->fetch_all(MYSQLI_ASSOC);
+$conn->close();
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,23 +49,20 @@ $tickets = $result->fetch_all(MYSQLI_ASSOC);
     <div class="collapse navbar-collapse justify-content-center">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="create.php">Create</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Inbox</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Ticket History</a>
-        </li>
       </ul>
+    </div>
+    <div>
+      <form action="signout.php" method="POST">
+        <button type="submit" class="btn btn-outline-danger">Sign Out</button>
     </div>
   </div>
 </nav>
 
 <main>
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Dashboard</h2>
   <div class="w-75 p-3 mx-auto mt-3">
     <div class="d-flex justify-content-center">
       <table class="table table-bordered text-center">
@@ -58,26 +72,31 @@ $tickets = $result->fetch_all(MYSQLI_ASSOC);
             <th scope="col">Title</th>
             <th scope="col">Description</th>
             <th scope="col">Status</th>
+            <th scope="col">Priority</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <?php if (!empty($tickets)): ?>
-            <?php $i = 1; ?>
-            <?php foreach ($tickets as $ticket): ?>
-              <tr>
-                <th scope="row"><?php echo $i++ ?></th>
-                <td><?php echo htmlspecialchars($ticket['title']); ?></td>
-                <td><?php echo htmlspecialchars($ticket['description']); ?></td>
-                <td><?php echo $ticket['status']; ?></td>
-                <td>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr><td colspan="5">No tickets found.</td></tr>
-          <?php endif; ?>
-        </tbody>
+  <?php if (!empty($tickets)): ?>
+    <?php $i = 1; ?>
+    <?php foreach ($tickets as $ticket): ?>
+      <tr>
+        <th scope="row"><?php echo $i++ ?></th>
+        <td><?php echo htmlspecialchars($ticket['title']); ?></td>
+        <td><?php echo htmlspecialchars($ticket['description']); ?></td>
+        <td><?php echo htmlspecialchars($ticket['status']); ?></td>
+        <td><?php echo htmlspecialchars($ticket['priority']); ?></td> 
+        <td>
+          <a href="edit.php?id=<?php echo $ticket['ticketid']; ?>" class="btn btn-primary me-md-3">Edit</a>
+          <a href="delete.php?id=<?php echo $ticket['ticketid']; ?>" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <tr><td colspan="6">No tickets found.</td></tr>
+  <?php endif; ?>
+</tbody>
+
       </table>
     </div>
   </div>
