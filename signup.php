@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
     <link href="/styles.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
@@ -37,12 +40,22 @@
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" id="password" name="password" class="form-control" required autocomplete="off">
+                                <div class="input-group">
+                                    <input type="password" id="password" name="password" class="form-control password1" required autocomplete="off">
+                                    <span class="input-group-text togglePassword1" style="cursor: pointer">
+                                        <i data-feather="eye"></i>
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="cpassword" class="form-label">Confirm Password</label>
-                                <input type="password" id="cpassword" name="cpassword" class="form-control" required autocomplete="off">
+                                <div class="input-group">
+                                    <input type="password" id="cpassword" name="cpassword" class="form-control password2" required autocomplete="off">
+                                    <span class="input-group-text togglePassword2" style="cursor: pointer">
+                                        <i data-feather="eye"></i>
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -103,3 +116,31 @@
         $conn->close();
     }
 ?>
+
+<script>
+    // Initialize Feather icons
+    feather.replace();
+
+    // Password toggle functionality for both password fields
+    function togglePassword(toggleButton, passwordInput) {
+        toggleButton.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle the eye icon
+            const eyeIcon = this.querySelector('i');
+            if (type === 'password') {
+                eyeIcon.setAttribute('data-feather', 'eye');
+            } else {
+                eyeIcon.setAttribute('data-feather', 'eye-off');
+            }
+            feather.replace();
+        });
+    }
+
+    // Initialize toggle functionality for both password fields
+    togglePassword(document.querySelector('.togglePassword1'), document.querySelector('.password1'));
+    togglePassword(document.querySelector('.togglePassword2'), document.querySelector('.password2'));
+</script>
+</body>
+</html>

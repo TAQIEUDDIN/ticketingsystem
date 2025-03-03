@@ -51,6 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -67,8 +70,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
+                                <label class="form-label">Password</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control password" id="password" type="password" name="password" required />
+                                    <span class="input-group-text togglePassword" id="">
+                                        <i data-feather="eye" style="cursor: pointer"></i>
+                                    </span>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">Sign In</button>
@@ -87,5 +95,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+
+        // Password toggle functionality
+        document.querySelector('.togglePassword').addEventListener('click', function() {
+            const password = document.querySelector('.password');
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // Toggle the eye icon
+            const eyeIcon = this.querySelector('i');
+            if (type === 'password') {
+                eyeIcon.setAttribute('data-feather', 'eye');
+            } else {
+                eyeIcon.setAttribute('data-feather', 'eye-off');
+            }
+            feather.replace();
+        });
+    </script>
 </body>
 </html>
